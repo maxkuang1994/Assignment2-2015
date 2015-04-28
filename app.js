@@ -129,6 +129,12 @@ function ensureAuthenticated(req, res, next) {
   res.redirect('/login');
 }
 
+var yelp = require("yelp").createClient({
+  consumer_key: "x4ZAU0MjLFPPyhwgc4cn5w", 
+  consumer_secret: "9Z3zHTL3gw_E7K8Ja35RA9gvSXs",
+  token: "zwddEOTzrQNGtZCNt6ziPaTdhkKnSG-1",
+  token_secret: "XOX6vl-6ORm5t_q5jZ93TecLkNE"
+});
 
 function ensureAuthenticatedInstagram(req, res, next) {
   if (req.isAuthenticated() && !!req.user.ig_id) { 
@@ -136,6 +142,86 @@ function ensureAuthenticatedInstagram(req, res, next) {
   }
   res.redirect('/login');
 }
+
+  var trends = require('node-google-search-trends');
+
+app.get('/google', function(req, res){
+
+
+
+// See http://www.yelp.com/developers/documentation/v2/search_api
+
+// See http://www.yelp.com/developers/documentation/v2/business
+//yelp.business("yelp-san-francisco", function(error, data) {
+  //console.log(error);
+  //console.log(data);
+//});
+var yelpResults =[];
+
+yelp.search({term: "shopping center", offset:"0",sort:"2",location: "san diego",radius_filter:"56000",category_filter:"shoppingcenters,fashion"}, function(error, data) {
+   
+ // console.log(data.businesses);
+//var the_length = data.businesses.length;
+  for(var i = 0 ; i<data.businesses.length;i++){
+       
+     yelpResults.push({
+            latitude: data.businesses[i].location.coordinate.latitude,
+            longitude: data.businesses[i].location.coordinate.longitude,
+     });
+
+//                console.log("final result is " + i+" "+yelpResults[i].latitude);
+              if(i == data.businesses.length-1){
+
+
+yelp.search({term: "shopping center", offset:"20",sort:"2",location: "san diego",radius_filter:"56000",category_filter:"shoppingcenters,fashion"}, function(error, data2) {
+
+  //console.log(data.businesses);
+    for(var i2 = 0 ; i2<data2.businesses.length;i2++){
+     yelpResults.push({
+            latitude: data2.businesses[i2].location.coordinate.latitude,
+            longitude: data2.businesses[i2].location.coordinate.longitude,
+     });
+         if(i2 == data2.businesses.length-1){
+               console.log("final result is " + i2+" "+yelpResults.length);
+               returna(yelpResults);
+         }
+    }//for loop 2
+
+});//this is inside the if 
+
+  
+    }
+  }
+});
+
+
+function returna(yelpResults){
+
+//  var trends = require('node-google-search-trends');
+trends('United States', 10, function(err, data){
+   //console.log(data);
+    if (err) 
+      return console.err(err);
+   // console.log(JSON.stringify(data, null, 2));  // Pretty prints JSON 'data'
+        var dataArray = [];
+        var a = 1;
+       // console.log(data[1]);
+        // console.log(data[2]['ht:news_item']);
+        for(var counter=0; counter<10;counter++)
+         {
+        //  console.log(counter);
+           dataArray.push({
+                dataLink:data[counter]['ht:news_item'][0]['ht:news_item_url'],
+           dataTitle:data[counter].title[0],
+           dataPicture:data[counter]['ht:picture'][0],
+             
+           });
+         }
+    
+  res.render('google', {data:dataArray, yelpResults: yelpResults});
+ });
+ }//function
+});
 
 
 //routes
@@ -148,10 +234,18 @@ app.get('/login', function(req, res){
 });
 
 app.get('/account', ensureAuthenticated, function(req, res){
+
+
   res.render('account', {user: req.user});
+
+
+
 });
 
-app.get('/igphotos', ensureAuthenticatedInstagram, function(req, res){
+
+
+
+app.get('/photos', ensureAuthenticatedInstagram, function(req, res){
   var query  = models.User.where({ ig_id: req.user.ig_id });
   query.findOne(function (err, user) {
     if (err) return err;
