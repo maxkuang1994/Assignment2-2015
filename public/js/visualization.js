@@ -19,12 +19,22 @@ var yAxis = d3.svg.axis()
   .scale(scaleY)
   .orient("left");
 
+//create a tip
+var tip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-10, 0])
+  .html(function(d) {
+    return "<strong>Number of Photos:</strong> <span style='color:red'>" + d.counts.media + "</span>";
+  })
+
 //create svg
-var svg = d3.select("body").append("svg")
+var svg = d3.select("#svgid").append("svg")
   .attr("width", width + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom)
   .append("g")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+svg.call(tip);
 
 //get json object which contains media counts
 d3.json('/igMediaCounts', function(error, data) {
@@ -40,8 +50,9 @@ d3.json('/igMediaCounts', function(error, data) {
     .call(xAxis)
     .selectAll("text")  
     .style("text-anchor", "end")
-    .attr("dx", "-.8em")
+    .attr("dx", "-4.0em")
     .attr("dy", ".15em")
+    .style("font-family","Helvetica,Arial,sans-serif")
     .attr("transform", function(d) {
       return "rotate(-65)" 
     });
@@ -55,6 +66,7 @@ d3.json('/igMediaCounts', function(error, data) {
     .attr("y", 6)
     .attr("dy", ".71em")
     .style("text-anchor", "end")
+    .style("font-family","Helvetica,Arial,sans-serif")
     .text("Number of Photos");
 
   //set up bars in bar graph
@@ -65,5 +77,40 @@ d3.json('/igMediaCounts', function(error, data) {
     .attr("x", function(d) { return scaleX(d.username); })
     .attr("width", scaleX.rangeBand())
     .attr("y", function(d) { return scaleY(d.counts.media); })
-    .attr("height", function(d) { return height - scaleY(d.counts.media); });
+    .attr("height", function(d) { return height - scaleY(d.counts.media); })
+    .attr("fill", function(d) { return "rgb(0, 0, " + (d * 10)%255 + ")";})
+    .on('mouseover', tip.show)
+    .on('mouseout', tip.hide);
+
+  d3.select("input").on("change", change);
+
+  var sortTimeout = setTimeout(function() {
+    d3.select("input").property("checked", true).each(change);
+  }, 2000);
+
+  function change() {
+    clearTimeout(sortTimeout);
+
+    // Copy-on-write since tweens are evaluated after a delay.
+    var x0 = scaleX.domain(data.users.sort(this.checked
+        ? function(a, b) { return b.counts.media - a.counts.media; }
+        : function(a, b) { return d3.ascending(a.username, b.username); })
+        .map(function(d) { return d.username; }))
+        .copy();
+
+    svg.selectAll(".bar")
+        .sort(function(a, b) { return x0(a.username) - x0(b.username); });
+
+    var transition = svg.transition().duration(750),
+        delay = function(d, i) { return i * 50; };
+
+    transition.selectAll(".bar")
+        .delay(delay)
+        .attr("x", function(d) { return x0(d.username); });
+
+    transition.select(".x.axis")
+        .call(xAxis)
+      .selectAll("g")
+        .delay(delay);
+  }
 });

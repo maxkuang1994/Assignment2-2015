@@ -14,6 +14,16 @@ var Instagram = require('instagram-node-lib');
 var async = require('async');
 var app = express();
 
+var NYT = require('nyt');
+
+var keys = {
+            'article-search':'d21016efef5d169d28e141ab68e7f7cf:5:71879521',
+            'most-popular':'b08bcaa7d0363523e7c5583b4e265b6a:18:71879521',
+            }
+
+var nyt = new NYT(keys);
+
+
 //local dependencies
 var models = require('./models');
 
@@ -33,13 +43,7 @@ db.once('open', function (callback) {
   console.log("Database connected succesfully.");
 });
 
-// Passport session setup.
-//   To support persistent login sessions, Passport needs to be able to
-//   serialize users into and deserialize users out of the session.  Typically,
-//   this will be as simple as storing the user ID when serializing, and finding
-//   the user by ID when deserializing.  However, since this example does not
-//   have a database of user records, the complete Instagram profile is
-//   serialized and deserialized.
+
 passport.serializeUser(function(user, done) {
   done(null, user);
 });
@@ -49,10 +53,6 @@ passport.deserializeUser(function(obj, done) {
 });
 
 
-// Use the InstagramStrategy within Passport.
-//   Strategies in Passport require a `verify` function, which accept
-//   credentials (in this case, an accessToken, refreshToken, and Instagram
-//   profile), and invoke a callback with a user object.
 passport.use(new InstagramStrategy({
     clientID: INSTAGRAM_CLIENT_ID,
     clientSecret: INSTAGRAM_CLIENT_SECRET,
@@ -89,9 +89,7 @@ passport.use(new InstagramStrategy({
         user.save();
         process.nextTick(function () {
           // To keep the example simple, the user's Instagram profile is returned to
-          // represent the logged-in user.  In a typical application, you would want
-          // to associate the Instagram account with a user record in your database,
-          // and return that user instead.
+
           return done(null, user);
         });
       }
@@ -117,11 +115,6 @@ app.use(passport.session());
 //set environment ports and start application
 app.set('port', process.env.PORT || 3000);
 
-// Simple route middleware to ensure user is authenticated.
-//   Use this route middleware on any resource that needs to be protected.  If
-//   the request is authenticated (typically via a persistent login session),
-//   the request will proceed.  Otherwise, the user will be redirected to the
-//   login page.
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { 
     return next(); 
@@ -143,56 +136,175 @@ function ensureAuthenticatedInstagram(req, res, next) {
   res.redirect('/login');
 }
 
+
   var trends = require('node-google-search-trends');
 
-app.get('/google', function(req, res){
 
 
+app.get('/login', function(req, res){
+  var healthnews=[];
+  var healthnews2=[];
+    var healthnews3=[];
+nyt.mostPopular.shared({'section':'style', 'time-period':'7'}, function(data) {
 
-// See http://www.yelp.com/developers/documentation/v2/search_api
+                  var data2=JSON.parse(data).results;
+         healthnews = data2.map(function(item) {
+            //create temporary json object
+            tempNEWS = [];
+            tempNEWS.url = item.url;
+               tempNEWS.title = item.title;
+               tempNEWS.abstract = item.abstract;
+               if(item.media.length>=1 && (item.media[0]['media-metadata'][0].url !=null)){
+                 tempNEWS.image = item.media[0]['media-metadata'][0].url;
+              // console.log(item.media[0]['media-metadata'][0].url);
+              }
+               else
+                tempNEWS.image=null;
+            return tempNEWS;
 
-// See http://www.yelp.com/developers/documentation/v2/business
-//yelp.business("yelp-san-francisco", function(error, data) {
-  //console.log(error);
-  //console.log(data);
-//});
-var yelpResults =[];
+         });
+   //  console.log(healthnews);
+  });
 
-yelp.search({term: "shopping center", offset:"0",sort:"2",location: "san diego",radius_filter:"56000",category_filter:"shoppingcenters,fashion"}, function(error, data) {
-   
- // console.log(data.businesses);
-//var the_length = data.businesses.length;
-  for(var i = 0 ; i<data.businesses.length;i++){
+nyt.mostPopular.shared({'section':'health', 'time-period':'7'}, function(data) {
+
+                  var data2=JSON.parse(data).results;
+             
+         healthnews2 = data2.map(function(item) {
+            //create temporary json object
+            tempNEWS = [];
+            tempNEWS.url = item.url;
+               tempNEWS.title = item.title;
+               tempNEWS.abstract = item.abstract;
+               if(item.media.length>=1 && (item.media[0]['media-metadata'][0].url !=null)){
+                 tempNEWS.image = item.media[0]['media-metadata'][0].url;
+              // console.log(item.media[0]['media-metadata'][0].url);
+              }
+               else
+                tempNEWS.image=null;
+           
        
+             return tempNEWS;
+
+         });
+   //  console.log(healthnews);
+  });
+nyt.mostPopular.shared({'section':'travel', 'time-period':'7'}, function(data) {
+
+                  var data2=JSON.parse(data).results;
+         healthnews3 = data2.map(function(item) {
+            //create temporary json object
+            tempNEWS = [];
+            tempNEWS.url = item.url;
+               tempNEWS.title = item.title;
+               tempNEWS.abstract = item.abstract;
+
+               if(item.media.length>=1 && (item.media[0]['media-metadata'][0].url !=null)){
+                 tempNEWS.image = item.media[0]['media-metadata'][0].url;
+              // console.log(item.media[0]['media-metadata'][0].url);
+              }
+               else
+                tempNEWS.image=null;
+            return tempNEWS;
+
+         });
+   //  console.log(healthnews);
+  });
+
+   var user_profilePicture ="";
+    var firstName ="";
+if(req.user!=null)
+
+    
+      if (req.user != null ) {
+     
+         var query = models.User.where({
+            name: req.user.username
+         });
+
+         query.findOne(function(err, user) {
+            if (err) return handleError(err);
+            if (req.user) {
+
+               Instagram.users.info({
+                  user_id: req.user.ig_id,
+                  access_token: req.user.ig_access_token,
+                  // user_id:req.user.id,
+                  complete: function(data) {
+                     user_profilePicture = data.profile_picture;
+                      firstName = data.full_name.substr(0, data.full_name.indexOf(' '));
+                  }
+               });
+            }
+         });
+
+      } //if ends 
+
+
+
+
+var yelpResults =[];
+var locationArray = ["irvine,ca", "la jolla,ca","california","vista,ca","spring valley,ca"];
+//console.log(locationArray[0]);
+for(var j =0; j<locationArray.length;j++){
+
+    bb(j);
+    function bb(j){
+
+yelp.search({term: "shopping center", offset:"0",sort:"2",location:locationArray[j],radius_filter:"56000",category_filter:"shoppingcenters,fashion"}, function(error, data) {
+ //console.log(data);
+  for(var i = 0 ; i<data.businesses.length;i++){
+             if(data.businesses[i]!=null &&data.businesses[i].rating>2.9 && data.businesses[i].name!=undefined &&data.businesses[i].url!=undefined)
      yelpResults.push({
             latitude: data.businesses[i].location.coordinate.latitude,
             longitude: data.businesses[i].location.coordinate.longitude,
+             rating:data.businesses[i].rating,
+            name:data.businesses[i].name,
+            image_url:data.businesses[i].mobile_url,
      });
 
-//                console.log("final result is " + i+" "+yelpResults[i].latitude);
-              if(i == data.businesses.length-1){
+   // console.log("final result is " + i+" "+yelpResults[i].latitude);
+  if(i == data.businesses.length-1){
 
+   yelp.search({term: "shopping center", offset:"20",sort:"2",location:locationArray[j],radius_filter:"56000",category_filter:"shoppingcenters,fashion"}, function(error, data2) {
 
-yelp.search({term: "shopping center", offset:"20",sort:"2",location: "san diego",radius_filter:"56000",category_filter:"shoppingcenters,fashion"}, function(error, data2) {
+    //console.log(data.businesses);
 
-  //console.log(data.businesses);
     for(var i2 = 0 ; i2<data2.businesses.length;i2++){
-     yelpResults.push({
-            latitude: data2.businesses[i2].location.coordinate.latitude,
-            longitude: data2.businesses[i2].location.coordinate.longitude,
-     });
-         if(i2 == data2.businesses.length-1){
-               console.log("final result is " + i2+" "+yelpResults.length);
+if(data2.businesses[i2]!=null)
+ // console.log(data2.businesses[i2].name);
+         if(data2.businesses[i]!=null &&data2.businesses[i].rating>2.9 &&data2.businesses[i2].url!=undefined)
+
+
+         yelpResults.push({
+              latitude: data2.businesses[i2].location.coordinate.latitude,
+              longitude: data2.businesses[i2].location.coordinate.longitude,
+              rating:data2.businesses[i2].rating,
+                name:data2.businesses[i2].name,
+              image_url:data2.businesses[i2].mobile_url,
+              user: req.user 
+           }); 
+
+ if(j == locationArray.length-1 && i2==data.businesses.length-1){
+             //  console.log("final result is " + i2+" "+yelpResults.length);
                returna(yelpResults);
+               return;
+           
          }
-    }//for loop 2
 
-});//this is inside the if 
+         }//for loop 2
 
-  
+      });//this is inside the if 
     }
+
+      
+
   }
-});
+
+});//search
+
+}
+}//outside for loop
 
 
 function returna(yelpResults){
@@ -210,15 +322,36 @@ trends('United States', 10, function(err, data){
         for(var counter=0; counter<10;counter++)
          {
         //  console.log(counter);
-           dataArray.push({
-                dataLink:data[counter]['ht:news_item'][0]['ht:news_item_url'],
-           dataTitle:data[counter].title[0],
-           dataPicture:data[counter]['ht:picture'][0],
+            dataArray.push({
+             dataLink:data[counter]['ht:news_item'][0]['ht:news_item_url'],
+             dataTitle:data[counter].title[0],
+             dataPicture:data[counter]['ht:picture'][0],
              
            });
          }
     
-  res.render('google', {data:dataArray, yelpResults: yelpResults});
+    if(req.user == null){
+
+       res.render('login', {data:dataArray, 
+      yelpResults: yelpResults,
+      healthnews:healthnews,
+      healthnews2:healthnews2.slice(0,7),
+      healthnews3:healthnews3.slice(0,7),
+              user: req.user,
+                      });
+    }
+      else{
+
+     res.render('login', {data:dataArray, 
+      yelpResults: yelpResults,
+      healthnews:healthnews,
+      healthnews2:healthnews2.slice(0,7),
+      healthnews3:healthnews3.slice(0,7),
+              user: req.user,
+               user_profilePicture: user_profilePicture,
+                      });
+   }
+     
  });
  }//function
 });
@@ -226,22 +359,35 @@ trends('United States', 10, function(err, data){
 
 //routes
 app.get('/', function(req, res){
-  res.render('login');
+  res.redirect('/login');
 });
 
-app.get('/login', function(req, res){
-  res.render('login', { user: req.user });
+app.get('/account', ensureAuthenticated, function(req, res) {
+var query = models.User.where({
+         name: req.user.username
+      });
+      query.findOne(function(err, user) {
+         if (err) return handleError(err);
+         if (req.user) {
+            Instagram.users.info({
+               user_id: req.user.ig_id,
+               access_token: req.user.ig_access_token,
+               // user_id:req.user.id,
+               complete: function(data) {
+                  var user_profilePicture = data.profile_picture;
+                  var firstName = data.full_name.substr(0, data.full_name.indexOf(' '));
+                  res.render('account', {
+                     user: req.user,
+                     user_profilePicture: user_profilePicture,
+                     firstName: firstName,
+                  });
+               }
+            });
+         }
+      });
+
+
 });
-
-app.get('/account', ensureAuthenticated, function(req, res){
-
-
-  res.render('account', {user: req.user});
-
-
-
-});
-
 
 
 
@@ -311,12 +457,56 @@ app.get('/igMediaCounts', ensureAuthenticatedInstagram, function(req, res){
 });
 
 app.get('/visualization', ensureAuthenticatedInstagram, function (req, res){
-  res.render('visualization');
+  var query = models.User.where({
+         name: req.user.username
+      });
+      query.findOne(function(err, user) {
+         if (err) return handleError(err);
+         if (req.user) {
+            Instagram.users.info({
+               user_id: req.user.ig_id,
+               access_token: req.user.ig_access_token,
+               // user_id:req.user.id,
+               complete: function(data) {
+                  var user_profilePicture = data.profile_picture;
+                  var firstName = data.full_name.substr(0, data.full_name.indexOf(' '));
+                  res.render('visualization', {
+                     user: req.user,
+                     user_profilePicture: user_profilePicture,
+                     firstName: firstName,
+                  });
+               }
+            });
+         }
+      });
+
 }); 
 
 
 app.get('/c3visualization', ensureAuthenticatedInstagram, function (req, res){
-  res.render('c3visualization');
+  var query = models.User.where({
+         name: req.user.username
+      });
+      query.findOne(function(err, user) {
+         if (err) return handleError(err);
+         if (req.user) {
+            Instagram.users.info({
+               user_id: req.user.ig_id,
+               access_token: req.user.ig_access_token,
+               // user_id:req.user.id,
+               complete: function(data) {
+                  var user_profilePicture = data.profile_picture;
+                  var firstName = data.full_name.substr(0, data.full_name.indexOf(' '));
+                  res.render('c3visualization', {
+                     user: req.user,
+                     user_profilePicture: user_profilePicture,
+                     firstName: firstName,
+                  });
+               }
+            });
+         }
+      });
+
 }); 
 
 app.get('/auth/instagram',
@@ -334,7 +524,7 @@ app.get('/auth/instagram/callback',
 
 app.get('/logout', function(req, res){
   req.logout();
-  res.redirect('/');
+  res.redirect('/login');
 });
 
 http.createServer(app).listen(app.get('port'), function() {
