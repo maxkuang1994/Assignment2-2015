@@ -514,9 +514,128 @@ app.get('/c3visualization', ensureAuthenticatedInstagram, function (req, res){
 
 }); 
 
+app.get('/moments', function(req, res) {
+
+  var healthnews=[];
+  var healthnews2=[];
+    var healthnews3=[];
+    output(healthnews,healthnews2,healthnews3);
+    function output(healthnews,healthnews2,healthnews3){
+nyt.mostPopular.shared({'section':'style', 'time-period':'7'}, function(data) {
+                  var data2=JSON.parse(data).results;
+         healthnews = data2.map(function(item) {
+            //create temporary json object
+            tempNEWS = [];
+            tempNEWS.url = item.url;
+               tempNEWS.title = item.title;
+               tempNEWS.abstract = item.abstract;
+               if(item.media.length>=1 && (item.media[0]['media-metadata'][0].url !=null)){
+                 tempNEWS.image = item.media[0]['media-metadata'][0].url;
+              // console.log(item.media[0]['media-metadata'][0].url);
+              }
+               else
+                tempNEWS.image=null;
+            return tempNEWS;
+
+         });
+   //  console.log(healthnews);
+  });
+  
+nyt.mostPopular.shared({'section':'health', 'time-period':'7'}, function(data) {
+
+                  var data2=JSON.parse(data).results;
+             
+         healthnews2 = data2.map(function(item) {
+            //create temporary json object
+            tempNEWS = [];
+            tempNEWS.url = item.url;
+               tempNEWS.title = item.title;
+               tempNEWS.abstract = item.abstract;
+               if(item.media.length>=1 && (item.media[0]['media-metadata'][0].url !=null)){
+                 tempNEWS.image = item.media[0]['media-metadata'][0].url;
+              // console.log(item.media[0]['media-metadata'][0].url);
+              }
+               else
+                tempNEWS.image=null;
+           
+       
+             return tempNEWS;
+
+         });
+   //  console.log(healthnews);
+  });
+nyt.mostPopular.shared({'section':'travel', 'time-period':'7'}, function(data) {
+
+                  var data2=JSON.parse(data).results;
+         healthnews3 = data2.map(function(item) {
+            //create temporary json object
+            tempNEWS = [];
+            tempNEWS.url = item.url;
+               tempNEWS.title = item.title;
+               tempNEWS.abstract = item.abstract;
+
+               if(item.media.length>=1 && (item.media[0]['media-metadata'][0].url !=null)){
+                 tempNEWS.image = item.media[0]['media-metadata'][0].url;
+              // console.log(item.media[0]['media-metadata'][0].url);
+              }
+               else
+                tempNEWS.image=null;
+            return tempNEWS;
+
+         });
+
+    res.render('moments', {
+       healthnews:healthnews,
+      healthnews2:healthnews2,
+      healthnews3:healthnews3,
+            });
+
+  });
+
+  
+};
+         
+});
+
 app.get('/places', function(req, res) {
    graph.setAccessToken('1492518170992676|OvEPZvrNsm08FKa8tvVcSTW8lY0');
-   graph.get("search?q=beach+san_diego&type=page&center=32.7150,-117.1625&distance=50000&limit=100000", function(err, res2) {
+var locationArray = ["la jolla,ca","san diego,california"];
+//console.log(locationArray[0]);
+
+var yelpResults=[];
+/* 
+for(var j =0; j<locationArray.length;j++){
+
+    bb(j);
+    function bb(j){
+
+yelp.search({term: "shopping center", offset:"0",sort:"2",location:locationArray[j],radius_filter:"56000",category_filter:"shoppingcenters,fashion"}, function(error, data) {
+ //console.log(data);
+  for(var i = 0 ; i<data.businesses.length;i++){
+             if(data.businesses[i]!=null &&data.businesses[i].rating>2.9 && data.businesses[i].name!=undefined &&data.businesses[i].url!=undefined)
+     yelpResults.push({
+            latitude: data.businesses[i].location.coordinate.latitude,
+            longitude: data.businesses[i].location.coordinate.longitude,
+             rating:data.businesses[i].rating,
+            name:data.businesses[i].name,
+            url:data.businesses[i].mobile_url,
+            snippet_image_url:data.businesses[i].image_url
+     });}})}
+
+  }//yelp for loop
+*/
+
+
+
+
+
+
+
+
+
+
+
+   graph.get("search?q=beach+san_diego&type=place&center=32.7150,-117.1625&distance=50000&limit=80", function(err, res2) {
 
          var location = [];
 
@@ -572,12 +691,13 @@ var a ="false";
                }) //graphinner
 
          };
-
+        
          function arr(data2) {
 
             res.render('places', {
                res2: res2,
-               location: data2
+               location: data2,
+               yelpResults:yelpResults
             });
          }
       }) //graph
@@ -602,8 +722,6 @@ app.get('/me', ensureAuthenticated, function(req, res) {
             complete: function(data) {
             
                //Map will iterate through the returned data obj
-         
-               
                if(data[0]!=null){
                var imageArr = data.map(function(item) {
                   //create temporary json object
@@ -629,9 +747,11 @@ app.get('/me', ensureAuthenticated, function(req, res) {
                   access_token: req.user.ig_access_token,
                   complete: function(data2) {
                      user_profilePicture = data2.profile_picture;
+                        var firstName = data2.full_name.substr(0, data2.full_name.indexOf(' '));
                      res.render('me', {
                         photos2: imageArr,
                         user: req.user,
+                        firstName:firstName,
                         user_profilePicture: user_profilePicture,
                         data:data[0]
                      });

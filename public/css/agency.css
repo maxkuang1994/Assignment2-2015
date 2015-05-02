@@ -1,4 +1,7 @@
-﻿.greenhover{
+﻿.shadows:hover{
+    opacity:0.7;
+}
+.greenhover{
     color:#19954E
 }
 .greenhover:hover{
