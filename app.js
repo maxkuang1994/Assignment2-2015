@@ -13,9 +13,14 @@ var mongoose = require('mongoose');
 var Instagram = require('instagram-node-lib');
 var async = require('async');
 var app = express();
+var graph = require('fbgraph');
+var NYT = require('nyt'); 
+var brokenMusicLink ='https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xaf1/v/t1.0-1/417197_10149999285992991_711134825_n.png?oh=5f504d85a96f2380b2e321d724d15511&oe=55DC0D22&__gda__=1435991238_9b0901b9ebd35182a3dccd793d453e0b';
+//local dependencies
+var brokenLink2='https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xaf1/v/t1.0-1/418333_10149999285994467_1920585607_n.png?oh=7d32e7fdad9c6cf1b0333b05245feb91&oe=55D6492D&__gda__=1439872202_649eda5738ff370b407d330b2a5fbec2';
 
-var NYT = require('nyt');
-
+var FACEBOOK_APP_ID = "1492518170992676";
+var FACEBOOK_APP_SECRET = '50a28fba3f3012f061cf58004db24fa8';
 var keys = {
             'article-search':'d21016efef5d169d28e141ab68e7f7cf:5:71879521',
             'most-popular':'b08bcaa7d0363523e7c5583b4e265b6a:18:71879521',
@@ -508,6 +513,76 @@ app.get('/c3visualization', ensureAuthenticatedInstagram, function (req, res){
       });
 
 }); 
+
+app.get('/love', function(req, res) {
+   graph.setAccessToken('1492518170992676|OvEPZvrNsm08FKa8tvVcSTW8lY0');
+   graph.get("search?q=beach+san_diego&type=page&center=32.7150,-117.1625&distance=50000&limit=100000", function(err, res2) {
+
+         var location = [];
+
+         for (var i = 0; i < res2.data.length; i++) {
+            location.push({
+               url: res2.data[i].id,
+            })
+         };
+
+         var locationINFO = [];
+   
+var i3=0;
+        
+         for (var i2 = 0; i2 < location.length; i2++) {
+
+   
+            graph.get("/" + location[i2].url + "?fields=description,checkins,likes,were_here_count,name,picture.type(large).width(600),link", function(err, res3) {
+                  var locationPicurl;
+var a ="false";
+
+           if ((res3.picture.data.width >= 400)&&(res3.picture.data.url!=brokenMusicLink)&&(res3.picture.data.url!=brokenLink2)&&(res3.picture.data.url!='https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xaf1/v/t1.0-1/418333_10149999285994467_1920585607_n.png?oh=7d32e7fdad9c6cf1b0333b05245feb91&oe=55D6492D&__gda__=1437280202_44cc3d9bbdc89cc4cc03a2ba3548da54')&&(res3.picture.data.url!='https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/v/t1.0-1/580798_10149999285995853_2130804811_n.png?oh=9d7c86b0f9b8d44f5140c79d8aa42b58&oe=5598A65F&__gda__=1436073212_5d1ecfb4933036d57c1f4e9a36983d60')&&(res3.picture.data.url != 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xaf1/v/t1.0-1/418333_10149999285994467_1920585607_n.png?oh=56f79c7d99c8953b1d3d458b592706d6&oe=55AEBC2D&__gda__=1437280202_85508750ff88cded83a455f528cf0a18'))
+                     {
+                     locationPicurl = res3.picture.data.url;
+                 i3++;
+                   a ="true";       
+                   }
+                if (a == "true") 
+                  var b =locationINFO.push({
+                     locationurl: res3.link,
+                     locationDescription: res3.description,
+                     locationCheckins: res3.checkins,
+                     locationLike: res3.likes,
+                     locationWereHere: res3.were_here_count,
+                     locationName: res3.name,
+                     locationPic: locationPicurl
+                  }); 
+                   i2--;
+                  if (i2==1) {
+                       locationInFO = locationINFO.sort(
+                           function(a, b){
+                          var keyA = a.locationWereHere,
+                          keyB = b.locationWereHere;
+                            // Compare the 2 dates
+                               if(keyA < keyB) return 1;
+                              if(keyA > keyB) return -1;
+                                     return 0;
+                             }
+                        );
+                      
+                     arr(locationINFO);
+                     return;
+                  }
+               }) //graphinner
+
+         };
+
+         function arr(data2) {
+
+            res.render('love', {
+               res2: res2,
+               location: data2
+            });
+         }
+      }) //graph
+});
+
 
 app.get('/auth/instagram',
   passport.authenticate('instagram'),
