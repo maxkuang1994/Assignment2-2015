@@ -584,6 +584,66 @@ var a ="false";
 });
 
 
+app.get('/me', ensureAuthenticated, function(req, res) {
+  
+   var query = models.User.where({
+      name: req.user.username
+   });
+
+   query.findOne(function(err, user) {
+      if (err) return handleError(err);
+      if (req.user) {
+         // doc may be null if no document matched
+         var user_profilePicture = "";
+         Instagram.users.self({
+            access_token: req.user.ig_access_token,
+            count: 200,
+            // user_id:req.user.id,
+            complete: function(data) {
+            
+               //Map will iterate through the returned data obj
+         
+               
+               if(data[0]!=null){
+               var imageArr = data.map(function(item) {
+                  //create temporary json object
+                  tempJSON = [];
+                  tempJSON.url2 = item.images.standard_resolution.url;
+                  if(item.caption!=null)
+                  tempJSON.pp = item.caption.text;
+                  else
+                       tempJSON.pp = " ";
+
+                  tempJSON.the_profilePicture = item.user.profile_picture;
+            
+                  if(item.likes!=null)
+                  tempJSON.numLikes = item.likes.count;
+                   else
+                       tempJSON.numLikes = 0;
+                  return tempJSON;
+               });
+               }
+
+               Instagram.users.info({
+                  user_id: req.user.ig_id,
+                  access_token: req.user.ig_access_token,
+                  complete: function(data2) {
+                     user_profilePicture = data2.profile_picture;
+                     res.render('me', {
+                        photos2: imageArr,
+                        user: req.user,
+                        user_profilePicture: user_profilePicture,
+                        data:data[0]
+                     });
+                  }
+               });
+
+            }
+         }); //instagram.users.self
+      } //user if ends
+   });
+});
+
 app.get('/auth/instagram',
   passport.authenticate('instagram'),
   function(req, res){
