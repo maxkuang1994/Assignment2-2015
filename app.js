@@ -514,7 +514,7 @@ app.get('/c3visualization', ensureAuthenticatedInstagram, function (req, res){
 
 }); 
 
-app.get('/love', function(req, res) {
+app.get('/places', function(req, res) {
    graph.setAccessToken('1492518170992676|OvEPZvrNsm08FKa8tvVcSTW8lY0');
    graph.get("search?q=beach+san_diego&type=page&center=32.7150,-117.1625&distance=50000&limit=100000", function(err, res2) {
 
@@ -575,7 +575,7 @@ var a ="false";
 
          function arr(data2) {
 
-            res.render('love', {
+            res.render('places', {
                res2: res2,
                location: data2
             });
