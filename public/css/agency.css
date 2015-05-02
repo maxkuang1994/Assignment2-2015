@@ -94,7 +94,10 @@ img {
   font-size: 2.0em;
   line-height: 1.15em;
 }
+.highlighted-thumb:hover{
 
+    opacity:0.7;
+}
 .headlines .highlighted .highlighted-thumb, .sect-related-links .highlighted .highlighted-thumb, .saved-arts .highlighted .highlighted-thumb {
   display: block;
   float: right;
