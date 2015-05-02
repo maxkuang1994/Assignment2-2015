@@ -19,7 +19,12 @@
     "mongoose-findorcreate": "^0.1.2",
     "passport": "0.2.1",
     "passport-instagram": "0.1.2",
-    "yelp": "^0.2.0"
+    "yelp": "^0.2.0",
+        "passport-facebook": "*",
+    "passport-facebook-canvas": "*",
+    "fbgraph": "*",
+     "nyt": "*",
+     "node-google-search-trends":"*",
   },
   "engines": {
     "node": "0.10.x"
