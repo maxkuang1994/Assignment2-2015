@@ -24,7 +24,7 @@
     "passport-facebook-canvas": "*",
     "fbgraph": "*",
      "nyt": "*",
-     "node-google-search-trends":"*",
+     "node-google-search-trends": "*"
   },
   "engines": {
     "node": "0.10.x"
