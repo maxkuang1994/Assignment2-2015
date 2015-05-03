@@ -1,13 +1,14 @@
+<body style=" background: url(/img/seven.png) no-repeat fixed 100% 100%; ">
 <div id="aaa">
+</div>
+<div>
+<h1>Fashion Starts Here</h1>
 </div>
 
 
 
 
-
-
-
-<section  style="background:#EC6161">
+<section  >
       <div id="wrapper1">
          <div id="columns1">
            
@@ -15,8 +16,15 @@
 
             <div class="pin1" style="padding:3px">
                <img class="img-responsive shadows" onError="this.onerror=null;this.src='http://echurchdepot.zurltd.netdna-cdn.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/7/3/739260007138L_3.jpg'" width="560" height="315" src="{{fashionurl}}" alt="">
-               <div>
        
+                <div>
+               <p class="cutword">{{fashioncaption}}</p>
+
+               <div style=" padding:3px; text-align: center;">
+                  <img src={{fashionprofilepicture}} style="width:40px; border:none;padding:none;" alt="author profile picture">
+                  <p class="noTextDec" style="display:inline">{{fashionname}}</p>
+                  </img>
+               </div>
                </div>
 
             </div>
@@ -83,8 +91,8 @@
   </style>
 
 <script type="text/javascript">
-var width = 1000,
-    height = 700;
+var width = 800,
+    height = 500;
 
  // Create a projection of the US
 //var projection = d3.geo.albersUsa()
@@ -161,5 +169,5 @@ locations.enter().append("svg:circle")
                      
     </script>
 </div>
-
+</body>
 

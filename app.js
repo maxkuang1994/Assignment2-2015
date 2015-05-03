@@ -533,6 +533,7 @@ nyt.mostPopular.shared({'section':'style', 'time-period':'7'}, function(data) {
             tempNEWS.url = item.url;
                tempNEWS.title = item.title;
                tempNEWS.abstract = item.abstract;
+               tempNEWS.published_date = item.published_date;
                if(item.media.length>=1 && (item.media[0]['media-metadata'][0].url !=null)){
                  tempNEWS.image = item.media[0]['media-metadata'][0].url;
               // console.log(item.media[0]['media-metadata'][0].url);
@@ -554,6 +555,7 @@ nyt.mostPopular.shared({'section':'health', 'time-period':'7'}, function(data) {
             tempNEWS = [];
             tempNEWS.url = item.url;
                tempNEWS.title = item.title;
+                          tempNEWS.published_date = item.published_date;
                tempNEWS.abstract = item.abstract;
                if(item.media.length>=1 && (item.media[0]['media-metadata'][0].url !=null)){
                  tempNEWS.image = item.media[0]['media-metadata'][0].url;
@@ -576,6 +578,7 @@ nyt.mostPopular.shared({'section':'travel', 'time-period':'7'}, function(data) {
             tempNEWS = [];
             tempNEWS.url = item.url;
                tempNEWS.title = item.title;
+                          tempNEWS.published_date = item.published_date;
                tempNEWS.abstract = item.abstract;
 
                if(item.media.length>=1 && (item.media[0]['media-metadata'][0].url !=null)){
@@ -605,24 +608,27 @@ nyt.mostPopular.shared({'section':'travel', 'time-period':'7'}, function(data) {
 
 app.get('/fashion', function(req, res) {
   var yelpResults=[];
-  var locationArray = ["la jolla,ca","san diego,california"];
+  var locationArray = ["irvine,ca","la jolla,california","del mar, california","oceanside,ca","san diego downtown,ca"];
   var imageArr =[];
-   var fashionArray=[3193855,6913295,13460080,13528260,602725764,187619120,10291533,1935199,193154362,23788300,15444816,22825504];
+   var fashionArray=[3193855,23410080,6913295,13460080,13528260,602725764,187619120,10291533,1935199,193154362,23788300,15444816,22825504,190611159,20269764];
   for(var a=0; a<fashionArray.length;a++){
     Instagram.users.recent({
            user_id: fashionArray[a],
-            count: 8,
+            count: 12,
             // user_id:req.user.id,
             complete: function(data) {
-             // console.log(data);
+            // console.log(data);
 
                if(data[0]!=null){
                 for(var i =0; i <data.length;i++){
+                  if(data[i].caption!=null)
                imageArr.push({
                   //create temporary json object
           
                   fashionurl:data[i].images.standard_resolution.url,
-
+                   fashionprofilepicture:data[i].user.profile_picture,
+                     fashionname:data[i].user.full_name,
+                  fashioncaption:data[i].caption.text,
                   fashionlink:data[i].link,
                  // tempJSON.the_profilePicture = item.user.profile_picture;
                });
@@ -639,7 +645,7 @@ for(var j =0; j<locationArray.length;j++){
     bb(j);
 
     function bb(j){
-yelp.search({term: "shopping center", offset:"0",sort:"2",location:locationArray[j],radius_filter:"56000",category_filter:"shoppingcenters,fashion"}, function(error, data) {
+yelp.search({term: "shopping center", offset:"0",sort:"1",location:locationArray[j],radius_filter:"56000",category_filter:"shoppingcenters,fashion"}, function(error, data) {
  //console.log(data);
   for(var i = 0 ; i<data.businesses.length;i++){
              if(data.businesses[i]!=null &&data.businesses[i].rating>2.9 && data.businesses[i].name!=undefined &&data.businesses[i].url!=undefined)
@@ -690,7 +696,7 @@ var yelpResults=[];
 
 
 
-   graph.get("search?q=beach+san_diego&type=place&center=32.7150,-117.1625&distance=50000&limit=80", function(err, res2) {
+   graph.get("search?q=beach+san_diego&type=place&center=32.7150,-117.1625&distance=50000&limit=200", function(err, res2) {
 
          var location = [];
 
