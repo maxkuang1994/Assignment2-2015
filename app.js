@@ -590,12 +590,85 @@ nyt.mostPopular.shared({'section':'travel', 'time-period':'7'}, function(data) {
             return tempNEWS;
 
          });
+         trends('United States', 5, function(err, data){
+    if (err) 
+      return console.err(err);
+   // console.log(JSON.stringify(data, null, 2));  // Pretty prints JSON 'data'
+        var dataArray = [];
+        var a = 1;
+       // console.log(data[1]);
+        // console.log(data[2]['ht:news_item']);
+        for(var counter=0; counter<5;counter++)
+         {
+        //  console.log(counter);
+            dataArray.push({
+             dataLink:data[counter]['ht:news_item'][0]['ht:news_item_url'],
+             dataTitle:data[counter].title[0],
+             dataPicture:data[counter]['ht:picture'][0],
+             dataTraffic:data[counter]['ht:approx_traffic'][0],
+           dataSource:data[counter]['ht:picture_source'][0],
+            dataDescription:data[counter].description[0],
+
+             
+             
+           });
+         }
+      var dataArray3 = [];
+          trends('canada', 5, function(err, data3){
+    if (err) 
+      return console.err(err);
+   
+        for(var counter=0; counter<5;counter++)
+         {
+        //  console.log(counter);
+            dataArray3.push({
+             dataLink:data3[counter]['ht:news_item'][0]['ht:news_item_url'],
+             dataTitle:data3[counter].title[0],
+             dataPicture:data3[counter]['ht:picture'][0],
+             dataTraffic:data[counter]['ht:approx_traffic'][0],
+             dataSource:data[counter]['ht:picture_source'][0],
+            dataDescription:data3[counter].description[0],
+
+             
+           });
+         }
+                  trends('united kingdom', 5, function(err, data2){
+    if (err) 
+      return console.err(err);
+   // console.log(JSON.stringify(data, null, 2));  // Pretty prints JSON 'data'
+        var dataArray2 = [];
+        var a = 1;
+       // console.log(data[1]);
+        // console.log(data[2]['ht:news_item']);
+        for(var counter=0; counter<5;counter++)
+         {
+        //  console.log(counter);
+            dataArray2.push({
+             dataLink:data2[counter]['ht:news_item'][0]['ht:news_item_url'],
+             dataTitle:data2[counter].title[0],
+             dataPicture:data2[counter]['ht:picture'][0],
+                 dataTraffic:data[counter]['ht:approx_traffic'][0],
+                     dataSource:data[counter]['ht:picture_source'][0],
+            dataDescription:data2[counter].description[0],
+             
+             
+           });
+         }
 
     res.render('moments', {
        healthnews:healthnews,
       healthnews2:healthnews2,
       healthnews3:healthnews3,
+      trends:dataArray,
+      trends2:dataArray2,
+      trends3:dataArray3
             });
+       }); });
+
+       });
+  
+
+
 
   });
 
@@ -717,7 +790,7 @@ var i3=0;
                   var locationPicurl;
 var a ="false";
 
-           if ((res3.picture.data.width >= 400)&&(res3.picture.data.url!=brokenMusicLink)&&(res3.picture.data.url!=brokenLink2)&&(res3.picture.data.url!='https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xaf1/v/t1.0-1/418333_10149999285994467_1920585607_n.png?oh=7d32e7fdad9c6cf1b0333b05245feb91&oe=55D6492D&__gda__=1437280202_44cc3d9bbdc89cc4cc03a2ba3548da54')&&(res3.picture.data.url!='https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/v/t1.0-1/580798_10149999285995853_2130804811_n.png?oh=9d7c86b0f9b8d44f5140c79d8aa42b58&oe=5598A65F&__gda__=1436073212_5d1ecfb4933036d57c1f4e9a36983d60')&&(res3.picture.data.url != 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xaf1/v/t1.0-1/418333_10149999285994467_1920585607_n.png?oh=56f79c7d99c8953b1d3d458b592706d6&oe=55AEBC2D&__gda__=1437280202_85508750ff88cded83a455f528cf0a18'))
+           if ((res3.picture.data.width >= 400)&&(res3.picture.data.url!=brokenMusicLink)&&(res3.picture.data.url!='https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/v/t1.0-1/580798_10149999285995853_2130804811_n.png?oh=6cdc0992b47918edb5102f82bfaa3490&oe=55C0335F&__gda__=1438665212_06f28c3198be5b8f99ff635aa0da0b6b')&&(res3.picture.data.url!=brokenLink2)&&(res3.picture.data.url!='https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xaf1/v/t1.0-1/418333_10149999285994467_1920585607_n.png?oh=7d32e7fdad9c6cf1b0333b05245feb91&oe=55D6492D&__gda__=1437280202_44cc3d9bbdc89cc4cc03a2ba3548da54')&&(res3.picture.data.url!='https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/v/t1.0-1/580798_10149999285995853_2130804811_n.png?oh=9d7c86b0f9b8d44f5140c79d8aa42b58&oe=5598A65F&__gda__=1436073212_5d1ecfb4933036d57c1f4e9a36983d60')&&(res3.picture.data.url != 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xaf1/v/t1.0-1/418333_10149999285994467_1920585607_n.png?oh=56f79c7d99c8953b1d3d458b592706d6&oe=55AEBC2D&__gda__=1437280202_85508750ff88cded83a455f528cf0a18'))
                      {
                      locationPicurl = res3.picture.data.url;
                  i3++;

@@ -1,4 +1,4 @@
-<body >
+<body>
 <header>
 
       <div class="intro-text" style="color:black">
@@ -6,6 +6,68 @@
                     <div class="intro-lead-in">Today's Moments Around Us</div>
       </div>
 </header>
+
+<section id="portfolio" style="overflow:hidden;margin:0 auto">
+
+  <div class="container bbb">
+      
+      <div>
+         <p style="text-align:center;width: 80%;font-size:1.4em;font-style: italic; color:black;display:inline-block;cursor:pointer" class="span2" tabindex="0">Trends in U.S.</p>
+
+          <ol data-view="results" class="headlines touchstates hp alert2" style="text-align:left;font-size:1.1em;list-style-type: decimal-leading-zero;">
+            {{#each trends}} 
+            <li class="border-b highlighted  item-0">
+            <a href="{{dataLink}}" class="noTextDec">
+  <img src={{dataPicture}} class="highlighted-thumb" onError="this.onerror=null;this.src='http://echurchdepot.zurltd.netdna-cdn.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/7/3/739260007138L_3.jpg'" width="150" height="150">
+  <span class="title">{{dataTitle}}</span>
+  </a>
+      
+            </li>    <h8>{{dataTraffic}} Searches</h8>
+             <h8 >{{dataSource}}</h8>{{/each}}
+          </ol>
+          </div>
+          </div>
+
+  <div class="container bbb uk">
+      
+      <div>
+         <p style="text-align:center;width: 80%;font-size:1.4em;font-style: italic; color:black;display:inline-block;cursor:pointer" class="span2" tabindex="0">U.K.</p>
+
+          <ol data-view="results" class="headlines touchstates hp alert2" style="text-align:left;font-size:1.1em;list-style-type: decimal-leading-zero;">
+            {{#each trends2}} 
+            <li class="border-b highlighted  item-0">
+            <a href="{{dataLink}}" class="noTextDec">
+  <img src={{dataPicture}} class="highlighted-thumb" onError="this.onerror=null;this.src='http://echurchdepot.zurltd.netdna-cdn.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/7/3/739260007138L_3.jpg'" width="150" height="150">
+  <span class="title">{{dataTitle}}</span>
+  </a>
+
+            </li> <h8>{{dataTraffic}} Searches</h8>
+             <h8 >{{dataSource}}</h8>{{/each}}
+          </ol>
+          </div>
+          </div>
+
+            <div class="container bbb can">
+      
+      <div>
+         <p style="text-align:center;width: 80%;font-size:1.4em;font-style: italic; color:black;display:inline-block;cursor:pointer" class="span2" tabindex="0">Canada</p>
+
+          <ol data-view="results" class="headlines touchstates hp alert2" style="text-align:left;font-size:1.1em;list-style-type: decimal-leading-zero;">
+            {{#each trends3}} 
+            <li class="border-b highlighted  item-0">
+            <a href="{{dataLink}}" class="noTextDec">
+  <img src={{dataPicture}} class="highlighted-thumb" onError="this.onerror=null;this.src='http://echurchdepot.zurltd.netdna-cdn.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/7/3/739260007138L_3.jpg'" width="150" height="150">
+  <span class="title">{{dataTitle}}</span>
+  </a>
+
+            </li> <h8>{{dataTraffic}} Searches</h8>
+             <h8 >{{dataSource}}</h8>{{/each}}
+          </ol>
+          </div>
+          </div>
+
+
+
 
 <ol data-view="results" class="headlines touchstates hp">
      {{#each healthnews}}
@@ -23,7 +85,7 @@
 <li class="border-b highlighted  item-0" style="font-size:1.2em" ><a href="{{url}}" class="noTextDec">
   <img src={{image}} class="highlighted-thumb" onError="this.onerror=null;this.src='http://echurchdepot.zurltd.netdna-cdn.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/7/3/739260007138L_3.jpg'" width="150" height="150">
   <span class="title">{{title}} {{published_date}}</span>
-  <p>{{abstract}}</p>
+  <p >{{abstract}}</p>
   </a>
   </li>{{/if}}
   {{/each}}
@@ -41,4 +103,8 @@
 
 </ol>
 
+
+
+
+</section>
 </body>
