@@ -681,7 +681,7 @@ nyt.mostPopular.shared({'section':'travel', 'time-period':'7'}, function(data) {
 
 app.get('/fashion', function(req, res) {
   var yelpResults=[];
-  var locationArray = ["irvine,ca","la jolla,california","del mar, california","oceanside,ca","san diego downtown,ca"];
+  var locationArray = ["la presa,ca","lemon grove,ca","irvine,ca","la jolla,california","del mar, california","oceanside,ca","san diego downtown,ca","national city,ca"];
   var imageArr =[];
    var fashionArray=[3193855,23410080,6913295,13460080,13528260,602725764,187619120,10291533,1935199,193154362,23788300,15444816,22825504,190611159,20269764];
   for(var a=0; a<fashionArray.length;a++){
@@ -762,13 +762,6 @@ var locationArray = ["la jolla,ca","san diego,california"];
 var yelpResults=[];
 
 
-
-
-
-
-
-
-
    graph.get("search?q=beach+san_diego&type=place&center=32.7150,-117.1625&distance=50000&limit=200", function(err, res2) {
 
          var location = [];
@@ -790,7 +783,7 @@ var i3=0;
                   var locationPicurl;
 var a ="false";
 
-           if ((res3.picture.data.width >= 400)&&(res3.picture.data.url!=brokenMusicLink)&&(res3.picture.data.url!='https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/v/t1.0-1/580798_10149999285995853_2130804811_n.png?oh=6cdc0992b47918edb5102f82bfaa3490&oe=55C0335F&__gda__=1438665212_06f28c3198be5b8f99ff635aa0da0b6b')&&(res3.picture.data.url!=brokenLink2)&&(res3.picture.data.url!='https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xaf1/v/t1.0-1/418333_10149999285994467_1920585607_n.png?oh=7d32e7fdad9c6cf1b0333b05245feb91&oe=55D6492D&__gda__=1437280202_44cc3d9bbdc89cc4cc03a2ba3548da54')&&(res3.picture.data.url!='https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/v/t1.0-1/580798_10149999285995853_2130804811_n.png?oh=9d7c86b0f9b8d44f5140c79d8aa42b58&oe=5598A65F&__gda__=1436073212_5d1ecfb4933036d57c1f4e9a36983d60')&&(res3.picture.data.url != 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xaf1/v/t1.0-1/418333_10149999285994467_1920585607_n.png?oh=56f79c7d99c8953b1d3d458b592706d6&oe=55AEBC2D&__gda__=1437280202_85508750ff88cded83a455f528cf0a18'))
+           if ((res3.picture.data.width >= 400)&&(res3.picture.data.url!=brokenMusicLink)&&(re3.picture.data.url!='https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/v/t1.0-1/580798_10149999285995853_2130804811_n.png?oh=6cdc0992b47918edb5102f82bfaa3490&oe=55C0335F&__gda__=1438665212_06f28c3198be5b8f99ff635aa0da0b6b')&&(res3.picture.data.url!=brokenLink2)&&(res3.picture.data.url!='https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xaf1/v/t1.0-1/418333_10149999285994467_1920585607_n.png?oh=7d32e7fdad9c6cf1b0333b05245feb91&oe=55D6492D&__gda__=1437280202_44cc3d9bbdc89cc4cc03a2ba3548da54')&&(res3.picture.data.url!='https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/v/t1.0-1/580798_10149999285995853_2130804811_n.png?oh=9d7c86b0f9b8d44f5140c79d8aa42b58&oe=5598A65F&__gda__=1436073212_5d1ecfb4933036d57c1f4e9a36983d60')&&(res3.picture.data.url != 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xaf1/v/t1.0-1/418333_10149999285994467_1920585607_n.png?oh=56f79c7d99c8953b1d3d458b592706d6&oe=55AEBC2D&__gda__=1437280202_85508750ff88cded83a455f528cf0a18'))
                      {
                      locationPicurl = res3.picture.data.url;
                  i3++;
