@@ -1,35 +1,165 @@
-<header style="background:#31B88A">
-
-      <div class="intro-text">
-         <div class="intro-heading">Hi,{{firstName}}</div>
-      </div>
+<div id="aaa">
+</div>
 
 
-</header>
+
+
+
+
+
 <section  style="background:#EC6161">
       <div id="wrapper1">
          <div id="columns1">
-           {{#if data}}
-            {{#each photos2}}
+           
+            {{#each imageArr}}
 
             <div class="pin1" style="padding:3px">
-               <img class="img-responsive shadows" onError="this.onerror=null;this.src='http://echurchdepot.zurltd.netdna-cdn.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/7/3/739260007138L_3.jpg'" width="560" height="315" src="{{url2}}" alt="">
+               <img class="img-responsive shadows" onError="this.onerror=null;this.src='http://echurchdepot.zurltd.netdna-cdn.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/7/3/739260007138L_3.jpg'" width="560" height="315" src="{{fashionurl}}" alt="">
                <div>
-               <p class="cutword">{{pp}}</p>
-
-               <div style=" padding:3px; text-align: center;">
-                  <img src={{the_profilePicture}} style="width:40px; border:none;padding:none;" alt="author profile picture">
-                  <p class="noTextDec" style="display:inline">{{numLikes}} likes</p>
-                  </img>
-               </div>
+       
                </div>
 
             </div>
 
             {{/each}}
-             {{/if}}
+       
 
 
          </div>
       </div>
 </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div>
+  <style type="text/css">
+
+    body {
+      background-color: #ffffff;
+    
+      margin: 0 auto;
+      font-family: Consolas, sans-serif;
+      font-size: 1.5em;
+      color: #454545;
+      font-weight: bold;
+      text-align: center;
+      margin: 0 auto
+    }
+    svg {
+      stroke: #D5CCCC;
+      stroke-width: 3px;
+      stroke-opacity: 0.4;
+      fill: rgba(255, 255, 255, 0.29);
+    }
+    text {
+      stroke-width: 1em;
+      stroke: #000000;
+      fill: #000000;
+    }
+    circle {
+   
+      stroke-width: 1.1em;
+   
+    }
+    circle:hover {
+      fill: #f24e17;
+      stroke-width: 1.5px;
+
+    }
+    a:hover,
+    a {
+      text-decoration: none;
+    }
+  </style>
+
+<script type="text/javascript">
+var width = 1000,
+    height = 700;
+
+ // Create a projection of the US
+//var projection = d3.geo.albersUsa()
+  //  .scale(1000)
+   // .translate([width/2, height/2]);
+
+
+    var projection = d3.geo.transverseMercator()
+      .rotate([116.7, -33])
+         .scale(20000);
+
+var path = d3.geo.path().projection(projection);
+
+// Create the SVG that state paths and location points will be attached to
+var d3_map = d3.select("#aaa").append("svg:svg")
+  .attr("width", "100%")
+  .attr("height", height)
+  .attr("style","text-align:center");
+
+// Create a 'g' element within the SVG which state paths will be attached to
+var states = d3_map.append("svg:g")
+  .attr("class", "states");
+        
+var locations = d3_map.append("svg:g")
+  .attr("class", "locations");
+
+
+
+var mapFeatures = d3.json("/css/map.json", function (collection) {
+    states.selectAll("path")
+      .data(collection.features)
+      .enter().append("path")
+      .attr("d", path); 
+ });
+var coordinate =[];
+coordinate.coordinates = [];
+
+
+
+{{#each yelpResults}}
+
+ var coordinates=[];
+
+  coordinate.push({
+       label:"{{name}};"+
+               " "+
+              "Rating:{{rating}}",
+       coordinates:[{{longitude}},{{latitude}}],
+       url:"{{image_url}}",
+       });
+
+{{/each}}
+
+
+
+var tooltip = d3.selectAll("body")
+                     .append("a")
+                     .style("position", "absolute")
+                     .style("z-index", "50")
+                     .style("visibility", "hidden")
+                     .text("a simple tooltip");
+             
+
+var locations = d3.select(".locations").selectAll('circle').data(coordinate);
+
+locations.enter().append("svg:circle")
+    .attr("cy", function(d) { return projection(d.coordinates)[1];})
+     .attr("cx", function(d) { return projection(d.coordinates)[0];})
+    .attr("id", function(d) { return "aa"})
+    .attr("r", 4.5)
+    .on("mouseover", function(d){return tooltip.text(d.label).style("visibility","visible").style("background","#ffffff").style("opacity","0.8") .attr("href",d.url);})
+                     .on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
+                  // .on("mouseout", function(){return tooltip.style("visibility", "hidden");})
+                     
+    </script>
+</div>
+
+

@@ -601,18 +601,44 @@ nyt.mostPopular.shared({'section':'travel', 'time-period':'7'}, function(data) {
          
 });
 
-app.get('/places', function(req, res) {
-   graph.setAccessToken('1492518170992676|OvEPZvrNsm08FKa8tvVcSTW8lY0');
-var locationArray = ["la jolla,ca","san diego,california"];
-//console.log(locationArray[0]);
 
-var yelpResults=[];
-/* 
+
+app.get('/fashion', function(req, res) {
+  var yelpResults=[];
+  var locationArray = ["la jolla,ca","san diego,california"];
+  var imageArr =[];
+   var fashionArray=[3193855,6913295,13460080,13528260,602725764,187619120,10291533,1935199,193154362,23788300,15444816,22825504];
+  for(var a=0; a<fashionArray.length;a++){
+    Instagram.users.recent({
+           user_id: fashionArray[a],
+            count: 8,
+            // user_id:req.user.id,
+            complete: function(data) {
+             // console.log(data);
+
+               if(data[0]!=null){
+                for(var i =0; i <data.length;i++){
+               imageArr.push({
+                  //create temporary json object
+          
+                  fashionurl:data[i].images.standard_resolution.url,
+
+                  fashionlink:data[i].link,
+                 // tempJSON.the_profilePicture = item.user.profile_picture;
+               });
+                }//for loop
+
+              }}
+               });
+}
+               
+
+
+
 for(var j =0; j<locationArray.length;j++){
-
     bb(j);
-    function bb(j){
 
+    function bb(j){
 yelp.search({term: "shopping center", offset:"0",sort:"2",location:locationArray[j],radius_filter:"56000",category_filter:"shoppingcenters,fashion"}, function(error, data) {
  //console.log(data);
   for(var i = 0 ; i<data.businesses.length;i++){
@@ -624,12 +650,37 @@ yelp.search({term: "shopping center", offset:"0",sort:"2",location:locationArray
             name:data.businesses[i].name,
             url:data.businesses[i].mobile_url,
             snippet_image_url:data.businesses[i].image_url
-     });}})}
+     });}
+ if(j == locationArray.length-1 ){
+  returnarray(yelpResults);
+  return;
+ }
+
+        //inside for
+    })//search
+   }//function
+
 
   }//yelp for loop
-*/
+function returnarray(yelpResults){
+  res.render('fashion', {
+               res: res,
+               yelpResults:yelpResults,
+               imageArr:imageArr 
+            });
+}
+     
 
 
+});
+
+
+app.get('/places', function(req, res) {
+   graph.setAccessToken('1492518170992676|OvEPZvrNsm08FKa8tvVcSTW8lY0');
+var locationArray = ["la jolla,ca","san diego,california"];
+//console.log(locationArray[0]);
+
+var yelpResults=[];
 
 
 
@@ -735,7 +786,6 @@ app.get('/me', ensureAuthenticated, function(req, res) {
                   tempJSON.pp = item.caption.text;
                   else
                        tempJSON.pp = " ";
-
                   tempJSON.the_profilePicture = item.user.profile_picture;
             
                   if(item.likes!=null)
