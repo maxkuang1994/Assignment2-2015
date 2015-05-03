@@ -514,6 +514,10 @@ app.get('/c3visualization', ensureAuthenticatedInstagram, function (req, res){
 
 }); 
 
+app.get('/help', function(req, res) {
+
+  res.render('help');
+});
 app.get('/moments', function(req, res) {
 
   var healthnews=[];
