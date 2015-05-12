@@ -1,4 +1,8 @@
-﻿.blueResponsive{
+﻿.opacity06{
+
+  opacity:0.6;
+}
+.blueResponsive{
   background-color: #00CC66;
     color:#FFFFFF;
 }
