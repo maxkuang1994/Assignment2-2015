@@ -32,6 +32,11 @@ var nyt = new NYT(keys);
 //local dependencies
 var models = require('./models');
 
+app.get('/chat', function(req, res){
+
+ res.render('chat');
+});
+
 //client id and client secret here, taken from .env
 dotenv.load();
 var INSTAGRAM_CLIENT_ID = process.env.INSTAGRAM_CLIENT_ID;
