@@ -26,8 +26,10 @@ var keys = {
             'most-popular':'b08bcaa7d0363523e7c5583b4e265b6a:18:71879521',
             }
 
+var FACEBOOK_APP_ID = "1492518170992676";
+var FACEBOOK_APP_SECRET = '50a28fba3f3012f061cf58004db24fa8';
 var nyt = new NYT(keys);
-
+     graph.setAccessToken('1492518170992676|OvEPZvrNsm08FKa8tvVcSTW8lY0');
 
 //local dependencies
 var models = require('./models');
@@ -152,9 +154,50 @@ function ensureAuthenticatedInstagram(req, res, next) {
 
 
 app.get('/login', function(req, res){
+
+   var user_profilePicture ="";
+    var firstName ="";
+if(req.user!=null)
+
+    
+      if (req.user != null ) {
+     
+         var query = models.User.where({
+            name: req.user.username
+         });
+
+         query.findOne(function(err, user) {
+            if (err) return handleError(err);
+            if (req.user) {
+
+               Instagram.users.info({
+                  user_id: req.user.ig_id,
+                  access_token: req.user.ig_access_token,
+                  // user_id:req.user.id,
+                  complete: function(data) {
+                     user_profilePicture = data.profile_picture;
+                      firstName = data.full_name.substr(0, data.full_name.indexOf(' '));
+                  }
+               });
+            }
+         });
+
+      } //if ends 
+
   var healthnews=[];
   var healthnews2=[];
     var healthnews3=[];
+
+    
+   var onepicture = "";
+     var FB = []; 
+  graph.get("/onehanachallenge/feed?fields=full_picture,message", function (err, fbdata) {
+    
+     FB.url = fbdata.data[0].full_picture;
+     FB.FBDescription = fbdata.data[0].message;
+      }
+      );
+
 nyt.mostPopular.shared({'section':'style', 'time-period':'7'}, function(data) {
 
                   var data2=JSON.parse(data).results;
@@ -197,8 +240,11 @@ nyt.mostPopular.shared({'section':'health', 'time-period':'7'}, function(data) {
              return tempNEWS;
 
          });
+         next();
+         return;
    //  console.log(healthnews);
   });
+function next(){
 nyt.mostPopular.shared({'section':'travel', 'time-period':'7'}, function(data) {
 
                   var data2=JSON.parse(data).results;
@@ -217,133 +263,14 @@ nyt.mostPopular.shared({'section':'travel', 'time-period':'7'}, function(data) {
                 tempNEWS.image=null;
             return tempNEWS;
 
-         });
-   //  console.log(healthnews);
-  });
 
-   var user_profilePicture ="";
-    var firstName ="";
-if(req.user!=null)
 
-    
-      if (req.user != null ) {
-     
-         var query = models.User.where({
-            name: req.user.username
          });
 
-         query.findOne(function(err, user) {
-            if (err) return handleError(err);
-            if (req.user) {
+             if(req.user == null){
 
-               Instagram.users.info({
-                  user_id: req.user.ig_id,
-                  access_token: req.user.ig_access_token,
-                  // user_id:req.user.id,
-                  complete: function(data) {
-                     user_profilePicture = data.profile_picture;
-                      firstName = data.full_name.substr(0, data.full_name.indexOf(' '));
-                  }
-               });
-            }
-         });
-
-      } //if ends 
-
-
-
-
-var yelpResults =[];
-var locationArray = ["irvine,ca", "la jolla,ca","california","vista,ca","spring valley,ca"];
-//console.log(locationArray[0]);
-for(var j =0; j<locationArray.length;j++){
-
-    bb(j);
-    function bb(j){
-
-yelp.search({term: "shopping center", offset:"0",sort:"2",location:locationArray[j],radius_filter:"56000",category_filter:"shoppingcenters,fashion"}, function(error, data) {
- //console.log(data);
-  for(var i = 0 ; i<data.businesses.length;i++){
-             if(data.businesses[i]!=null &&data.businesses[i].rating>2.9 && data.businesses[i].name!=undefined &&data.businesses[i].url!=undefined)
-     yelpResults.push({
-            latitude: data.businesses[i].location.coordinate.latitude,
-            longitude: data.businesses[i].location.coordinate.longitude,
-             rating:data.businesses[i].rating,
-            name:data.businesses[i].name,
-            image_url:data.businesses[i].mobile_url,
-     });
-
-   // console.log("final result is " + i+" "+yelpResults[i].latitude);
-  if(i == data.businesses.length-1){
-
-   yelp.search({term: "shopping center", offset:"20",sort:"2",location:locationArray[j],radius_filter:"56000",category_filter:"shoppingcenters,fashion"}, function(error, data2) {
-
-    //console.log(data.businesses);
-
-    for(var i2 = 0 ; i2<data2.businesses.length;i2++){
-if(data2.businesses[i2]!=null)
- // console.log(data2.businesses[i2].name);
-         if(data2.businesses[i]!=null &&data2.businesses[i].rating>2.9 &&data2.businesses[i2].url!=undefined)
-
-
-         yelpResults.push({
-              latitude: data2.businesses[i2].location.coordinate.latitude,
-              longitude: data2.businesses[i2].location.coordinate.longitude,
-              rating:data2.businesses[i2].rating,
-                name:data2.businesses[i2].name,
-              image_url:data2.businesses[i2].mobile_url,
-              user: req.user 
-           }); 
-
- if(j == locationArray.length-1 && i2==data.businesses.length-1){
-             //  console.log("final result is " + i2+" "+yelpResults.length);
-               returna(yelpResults);
-               return;
-           
-         }
-
-         }//for loop 2
-
-      });//this is inside the if 
-    }
-
-      
-
-  }
-
-});//search
-
-}
-}//outside for loop
-
-
-function returna(yelpResults){
-
-//  var trends = require('node-google-search-trends');
-trends('United States', 10, function(err, data){
-   //console.log(data);
-    if (err) 
-      return console.err(err);
-   // console.log(JSON.stringify(data, null, 2));  // Pretty prints JSON 'data'
-        var dataArray = [];
-        var a = 1;
-       // console.log(data[1]);
-        // console.log(data[2]['ht:news_item']);
-        for(var counter=0; counter<10;counter++)
-         {
-        //  console.log(counter);
-            dataArray.push({
-             dataLink:data[counter]['ht:news_item'][0]['ht:news_item_url'],
-             dataTitle:data[counter].title[0],
-             dataPicture:data[counter]['ht:picture'][0],
-             
-           });
-         }
-    
-    if(req.user == null){
-
-       res.render('login', {data:dataArray, 
-      yelpResults: yelpResults,
+       res.render('login', {
+            FB:FB,
       healthnews:healthnews,
       healthnews2:healthnews2.slice(0,7),
       healthnews3:healthnews3.slice(0,7),
@@ -352,18 +279,20 @@ trends('United States', 10, function(err, data){
     }
       else{
 
-     res.render('login', {data:dataArray, 
-      yelpResults: yelpResults,
+     res.render('login', {
+       FB:FB,
       healthnews:healthnews,
       healthnews2:healthnews2.slice(0,7),
       healthnews3:healthnews3.slice(0,7),
               user: req.user,
                user_profilePicture: user_profilePicture,
                       });
-   }
-     
- });
- }//function
+    }//else    
+
+   //  console.log(healthnews);
+  });}
+
+ 
 });
 
 
@@ -518,7 +447,35 @@ app.get('/c3visualization', ensureAuthenticatedInstagram, function (req, res){
       });
 
 }); 
+app.get('/challenges', function(req, res) {
 
+
+
+      graph.get("/onehanachallenge/feed?fields=full_picture,message", function(err, res1) {
+         var res1 = res1;
+
+         var messageArr = [];
+
+         
+         for (var i = 0; i < res1.data.length; i++) {
+          
+            messageArr.push({
+                message: res1.data[i].message,
+                image:res1.data[i].full_picture,
+         
+            });
+          
+         }//if ends
+
+         res.render('challenges', {
+            facebook: messageArr,
+          
+         });
+      });
+
+
+
+});
 app.get('/help', function(req, res) {
 
   res.render('help');
@@ -733,7 +690,7 @@ yelp.search({term: "shopping center", offset:"0",sort:"1",location:locationArray
              rating:data.businesses[i].rating,
             name:data.businesses[i].name,
             url:data.businesses[i].mobile_url,
-            snippet_image_url:data.businesses[i].image_url
+            //snippet_image_url:data.businesses[i].image_url,
      });}
  if(j == locationArray.length-1 ){
   returnarray(yelpResults);
