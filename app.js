@@ -476,9 +476,9 @@ app.get('/challenges', function(req, res) {
 
 
 });
-app.get('/help', function(req, res) {
+app.get('/about', function(req, res) {
 
-  res.render('help');
+  res.render('about');
 });
 app.get('/moments', function(req, res) {
 
