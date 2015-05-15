@@ -194,8 +194,16 @@ if(req.user!=null)
 
 
 nyt.mostPopular.shared({'section':'style', 'time-period':'7'}, function(data) {
-
+  var data2;
+if (data){
+    try{
+       
                   var data2=JSON.parse(data).results;
+    }catch(e){
+         return;
+      //  alert(e); //error in the above string(in this case,yes)!
+    }
+}
          healthnews = data2.map(function(item) {
             //create temporary json object
             tempNEWS = [];
@@ -215,8 +223,17 @@ nyt.mostPopular.shared({'section':'style', 'time-period':'7'}, function(data) {
   });
 
 nyt.mostPopular.shared({'section':'health', 'time-period':'7'}, function(data) {
-
+                 
+         var data2;
+if (data){
+    try{
+       
                   var data2=JSON.parse(data).results;
+    }catch(e){
+         return;
+       // alert(e); //error in the above string(in this case,yes)!
+    }
+}
              
          healthnews2 = data2.map(function(item) {
             //create temporary json object
@@ -252,8 +269,16 @@ function next2(){
 }
 function next(){
 nyt.mostPopular.shared({'section':'travel', 'time-period':'7'}, function(data) {
-
-         var data2=JSON.parse(data).results;
+  var data2;
+if (data){
+    try{
+       
+                  var data2=JSON.parse(data).results;
+    }catch(e){
+        return;
+        //alert(e); //error in the above string(in this case,yes)!
+    }
+}
          healthnews3 = data2.map(function(item) {
             //create temporary json object
             tempNEWS = [];
@@ -494,7 +519,16 @@ app.get('/moments', function(req, res) {
     output(healthnews,healthnews2,healthnews3);
     function output(healthnews,healthnews2,healthnews3){
 nyt.mostPopular.shared({'section':'style', 'time-period':'7'}, function(data) {
+                  var data2;
+if (data){
+    try{
+       
                   var data2=JSON.parse(data).results;
+    }catch(e){
+        return;
+        //alert(e); //error in the above string(in this case,yes)!
+    }
+}
          healthnews = data2.map(function(item) {
             //create temporary json object
             tempNEWS = [];
@@ -516,7 +550,16 @@ nyt.mostPopular.shared({'section':'style', 'time-period':'7'}, function(data) {
   
 nyt.mostPopular.shared({'section':'health', 'time-period':'7'}, function(data) {
 
+          var data2;
+if (data){
+    try{
+       
                   var data2=JSON.parse(data).results;
+    }catch(e){
+        return;
+        //alert(e); //error in the above string(in this case,yes)!
+    }
+}
              
          healthnews2 = data2.map(function(item) {
             //create temporary json object
@@ -540,7 +583,16 @@ nyt.mostPopular.shared({'section':'health', 'time-period':'7'}, function(data) {
   });
 nyt.mostPopular.shared({'section':'travel', 'time-period':'7'}, function(data) {
 
+                  var data2;
+if (data){
+    try{
+       
                   var data2=JSON.parse(data).results;
+    }catch(e){
+        return;
+        //alert(e); //error in the above string(in this case,yes)!
+    }
+}
          healthnews3 = data2.map(function(item) {
             //create temporary json object
             tempNEWS = [];
