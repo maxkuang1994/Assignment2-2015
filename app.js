@@ -191,12 +191,7 @@ if(req.user!=null)
     
    var onepicture = "";
      var FB = []; 
-  graph.get("/onehanachallenge/feed?fields=full_picture,message", function (err, fbdata) {
-    
-     FB.url = fbdata.data[0].full_picture;
-     FB.FBDescription = fbdata.data[0].message;
-      }
-      );
+
 
 nyt.mostPopular.shared({'section':'style', 'time-period':'7'}, function(data) {
 
@@ -240,10 +235,19 @@ nyt.mostPopular.shared({'section':'health', 'time-period':'7'}, function(data) {
              return tempNEWS;
 
          });
-         next();
+         next2();
          return;
    //  console.log(healthnews);
   });
+function next2(){
+    graph.get("/onehanachallenge/feed?fields=full_picture,message", function (err, fbdata) {
+    
+     FB.url = fbdata.data[0].full_picture;
+     FB.FBDescription = fbdata.data[0].message;
+      }
+      );
+    next();
+}
 function next(){
 nyt.mostPopular.shared({'section':'travel', 'time-period':'7'}, function(data) {
 
