@@ -718,7 +718,7 @@ app.get('/fashion', function(req, res) {
                imageArr.push({
                   //create temporary json object
           
-                  fashionurl:data[i].images.low_resolution.url,
+                  fashionurl:data[i].images.standard_resolution.url,
                    fashionprofilepicture:data[i].user.profile_picture,
                      fashionname:data[i].user.full_name,
                   fashioncaption:data[i].caption.text,
