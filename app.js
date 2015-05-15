@@ -244,9 +244,11 @@ function next2(){
     
      FB.url = fbdata.data[0].full_picture;
      FB.FBDescription = fbdata.data[0].message;
+         next();
       }
+
       );
-    next();
+
 }
 function next(){
 nyt.mostPopular.shared({'section':'travel', 'time-period':'7'}, function(data) {
