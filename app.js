@@ -247,7 +247,7 @@ nyt.mostPopular.shared({'section':'health', 'time-period':'7'}, function(data) {
 function next(){
 nyt.mostPopular.shared({'section':'travel', 'time-period':'7'}, function(data) {
 
-                  var data2=JSON.parse(data).results;
+         var data2=JSON.parse(data).results;
          healthnews3 = data2.map(function(item) {
             //create temporary json object
             tempNEWS = [];
